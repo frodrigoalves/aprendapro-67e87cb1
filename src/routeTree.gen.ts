@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FerramentasRouteImport } from './routes/ferramentas'
 import { Route as CursosRouteImport } from './routes/cursos'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SlugRouteImport } from './routes/$slug'
@@ -22,6 +23,11 @@ import { Route as AuthenticatedAdminPagesIdEditRouteImport } from './routes/_aut
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FerramentasRoute = FerramentasRouteImport.update({
+  id: '/ferramentas',
+  path: '/ferramentas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CursosRoute = CursosRouteImport.update({
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
   '/cursos': typeof CursosRoute
+  '/ferramentas': typeof FerramentasRoute
   '/login': typeof LoginRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
   '/cursos': typeof CursosRoute
+  '/ferramentas': typeof FerramentasRoute
   '/login': typeof LoginRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/$slug': typeof SlugRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/cursos': typeof CursosRoute
+  '/ferramentas': typeof FerramentasRoute
   '/login': typeof LoginRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/cursos'
+    | '/ferramentas'
     | '/login'
     | '/admin/'
     | '/admin/pages/new'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/cursos'
+    | '/ferramentas'
     | '/login'
     | '/admin'
     | '/admin/pages/new'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/_authenticated'
     | '/cursos'
+    | '/ferramentas'
     | '/login'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/pages/new'
@@ -138,6 +150,7 @@ export interface RootRouteChildren {
   SlugRoute: typeof SlugRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   CursosRoute: typeof CursosRoute
+  FerramentasRoute: typeof FerramentasRoute
   LoginRoute: typeof LoginRoute
 }
 
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ferramentas': {
+      id: '/ferramentas'
+      path: '/ferramentas'
+      fullPath: '/ferramentas'
+      preLoaderRoute: typeof FerramentasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cursos': {
@@ -232,6 +252,7 @@ const rootRouteChildren: RootRouteChildren = {
   SlugRoute: SlugRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   CursosRoute: CursosRoute,
+  FerramentasRoute: FerramentasRoute,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
