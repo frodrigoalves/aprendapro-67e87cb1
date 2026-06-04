@@ -24,14 +24,23 @@ export const bootstrapAdmin = createServerFn({ method: "POST" }).handler(
       return { created: false, reason: "already-exists" as const };
     }
 
-    const { error: createError } = await supabaseAdmin.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-    });
-    if (createError) {
+    const { data: created, error: createError } =
+      await supabaseAdmin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+      });
+    if (createError || !created.user) {
       console.error("createUser failed:", createError);
       return { created: false, reason: "create-failed" as const };
+    }
+
+    const { error: roleError } = await supabaseAdmin
+      .from("user_roles")
+      .insert({ user_id: created.user.id, role: "admin" });
+    if (roleError) {
+      console.error("assign admin role failed:", roleError);
+      return { created: false, reason: "role-failed" as const };
     }
 
     return { created: true, email };
