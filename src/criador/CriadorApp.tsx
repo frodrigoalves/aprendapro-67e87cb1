@@ -111,8 +111,8 @@ function WordWizard() {
   const [logo, setLogo] = useState<string | undefined>(undefined);
   const [sections, setSections] = useState<DocSection[]>([{ title: "Introdução", body: "" }]);
   const [tables, setTables] = useState<DocTable[]>([]);
-  const [fontFamily, setFontFamily] = useState(CURATED_FONTS[1]);
-  const [accentHex, setAccentHex] = useState(CURATED_ACCENT_COLORS[0].hex);
+  const [fontFamily, setFontFamily] = useState<string>(CURATED_FONTS[1]);
+  const [accentHex, setAccentHex] = useState<string>(CURATED_ACCENT_COLORS[0].hex);
   const [busy, setBusy] = useState(false);
 
   const canNext =
