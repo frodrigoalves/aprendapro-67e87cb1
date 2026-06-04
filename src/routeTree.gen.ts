@@ -10,6 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FerramentasRouteImport } from './routes/ferramentas'
+import { Route as CursosRouteImport } from './routes/cursos'
+import { Route as CriadorRouteImport } from './routes/criador'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
@@ -21,6 +24,21 @@ import { Route as AuthenticatedAdminPagesIdEditRouteImport } from './routes/_aut
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FerramentasRoute = FerramentasRouteImport.update({
+  id: '/ferramentas',
+  path: '/ferramentas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CursosRoute = CursosRouteImport.update({
+  id: '/cursos',
+  path: '/cursos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CriadorRoute = CriadorRouteImport.update({
+  id: '/criador',
+  path: '/criador',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -64,6 +82,9 @@ const AuthenticatedAdminPagesIdEditRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/criador': typeof CriadorRoute
+  '/cursos': typeof CursosRoute
+  '/ferramentas': typeof FerramentasRoute
   '/login': typeof LoginRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
@@ -73,6 +94,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/criador': typeof CriadorRoute
+  '/cursos': typeof CursosRoute
+  '/ferramentas': typeof FerramentasRoute
   '/login': typeof LoginRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
@@ -84,6 +108,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/criador': typeof CriadorRoute
+  '/cursos': typeof CursosRoute
+  '/ferramentas': typeof FerramentasRoute
   '/login': typeof LoginRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
@@ -95,6 +122,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$slug'
+    | '/criador'
+    | '/cursos'
+    | '/ferramentas'
     | '/login'
     | '/admin/'
     | '/admin/pages/new'
@@ -104,6 +134,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$slug'
+    | '/criador'
+    | '/cursos'
+    | '/ferramentas'
     | '/login'
     | '/admin'
     | '/admin/pages/new'
@@ -114,6 +147,9 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/_authenticated'
+    | '/criador'
+    | '/cursos'
+    | '/ferramentas'
     | '/login'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/pages/new'
@@ -125,6 +161,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SlugRoute: typeof SlugRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  CriadorRoute: typeof CriadorRoute
+  CursosRoute: typeof CursosRoute
+  FerramentasRoute: typeof FerramentasRoute
   LoginRoute: typeof LoginRoute
 }
 
@@ -135,6 +174,27 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ferramentas': {
+      id: '/ferramentas'
+      path: '/ferramentas'
+      fullPath: '/ferramentas'
+      preLoaderRoute: typeof FerramentasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cursos': {
+      id: '/cursos'
+      path: '/cursos'
+      fullPath: '/cursos'
+      preLoaderRoute: typeof CursosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/criador': {
+      id: '/criador'
+      path: '/criador'
+      fullPath: '/criador'
+      preLoaderRoute: typeof CriadorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -211,6 +271,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  CriadorRoute: CriadorRoute,
+  CursosRoute: CursosRoute,
+  FerramentasRoute: FerramentasRoute,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
