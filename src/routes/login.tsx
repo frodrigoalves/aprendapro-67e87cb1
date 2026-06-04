@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { LogIn } from "lucide-react";
+import { Logo } from "@/components/brand/Logo";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -57,19 +57,12 @@ function LoginPage() {
   };
 
   return (
-    <div
-      className="flex min-h-screen items-center justify-center px-4"
-      style={{ background: "var(--gradient-hero)" }}
-    >
-      <Card className="w-full max-w-md bg-card/80 backdrop-blur border-border p-8">
-        <div className="mb-6 flex flex-col items-center gap-2">
-          <div
-            className="flex h-12 w-12 items-center justify-center rounded-xl"
-            style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}
-          >
-            <LogIn className="h-6 w-6 text-primary-foreground" strokeWidth={1.5} />
-          </div>
-          <h1 className="text-xl font-semibold">Acesso restrito</h1>
+    <div className="flex min-h-screen items-center justify-center px-4 py-10 bg-hero">
+      <Card className="w-full max-w-md bg-card/85 backdrop-blur border-border p-6 sm:p-8 shadow-elegant">
+        <div className="mb-6 flex flex-col items-center gap-3">
+          <Logo className="h-10" />
+          <h1 className="text-lg font-semibold tracking-tight">Acesso restrito</h1>
+          <p className="text-xs text-muted-foreground">Entre para gerenciar suas landing pages</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
