@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { bootstrapAdmin } from "@/lib/bootstrap-admin.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,9 +26,22 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/admin", replace: true });
-    });
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await bootstrapAdmin();
+        if (!cancelled && result.created) {
+          toast.success(`Usuário admin inicial criado: ${result.email}`);
+        }
+      } catch (err) {
+        console.error("bootstrapAdmin error:", err);
+      }
+      const { data } = await supabase.auth.getUser();
+      if (!cancelled && data.user) navigate({ to: "/admin", replace: true });
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
