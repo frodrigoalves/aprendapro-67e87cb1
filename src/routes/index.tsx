@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { SiteHeader } from "@/components/site/SiteHeader";
 import { Logo } from "@/components/brand/Logo";
 
 export const Route = createFileRoute("/")({
@@ -18,7 +19,6 @@ export const Route = createFileRoute("/")({
 function Landing() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-hero">
-      {/* Decorative blurred blobs */}
       <div
         aria-hidden
         className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full opacity-50 blur-3xl"
@@ -35,22 +35,18 @@ function Landing() {
         style={{ background: "radial-gradient(circle, var(--brand-navy), transparent 65%)" }}
       />
 
-      <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
-        <Logo className="w-full max-w-md sm:max-w-lg md:max-w-2xl" />
-        <p className="mt-8 max-w-xl text-base sm:text-lg text-muted-foreground">
-          Plataforma profissional avançada de cursos para você se tornar um profissional de alta
-          performance.
-        </p>
-      </main>
-
-      {/* Discreet admin access */}
-      <Link
-        to="/login"
-        aria-label="Acesso administrativo"
-        className="absolute bottom-4 right-4 z-20 text-xs text-muted-foreground/60 hover:text-foreground transition-colors"
-      >
-        Acesso
-      </Link>
+      <div className="relative z-10">
+        <SiteHeader transparent />
+        <main className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 text-center">
+          <Link to="/" aria-label="Aprenda Pro">
+            <Logo className="w-full max-w-md sm:max-w-lg md:max-w-2xl" />
+          </Link>
+          <p className="mt-8 max-w-xl text-base sm:text-lg text-muted-foreground">
+            Plataforma profissional avançada de cursos para você se tornar um profissional de alta
+            performance.
+          </p>
+        </main>
+      </div>
     </div>
   );
 }
