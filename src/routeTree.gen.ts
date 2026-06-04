@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminPagesIndexRouteImport } from './routes/_authenticated/admin/pages/index'
+import { Route as AuthenticatedAdminPagesNewRouteImport } from './routes/_authenticated/admin/pages/new'
+import { Route as AuthenticatedAdminPagesIdEditRouteImport } from './routes/_authenticated/admin/pages/$id/edit'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -40,18 +42,34 @@ const AuthenticatedAdminPagesIndexRoute =
     path: '/admin/pages/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminPagesNewRoute =
+  AuthenticatedAdminPagesNewRouteImport.update({
+    id: '/admin/pages/new',
+    path: '/admin/pages/new',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminPagesIdEditRoute =
+  AuthenticatedAdminPagesIdEditRouteImport.update({
+    id: '/admin/pages/$id/edit',
+    path: '/admin/pages/$id/edit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
   '/admin/pages/': typeof AuthenticatedAdminPagesIndexRoute
+  '/admin/pages/$id/edit': typeof AuthenticatedAdminPagesIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
   '/admin/pages': typeof AuthenticatedAdminPagesIndexRoute
+  '/admin/pages/$id/edit': typeof AuthenticatedAdminPagesIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,20 +77,36 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
   '/_authenticated/admin/pages/': typeof AuthenticatedAdminPagesIndexRoute
+  '/_authenticated/admin/pages/$id/edit': typeof AuthenticatedAdminPagesIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/admin/' | '/admin/pages/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/admin/'
+    | '/admin/pages/new'
+    | '/admin/pages/'
+    | '/admin/pages/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/admin' | '/admin/pages'
+  to:
+    | '/'
+    | '/login'
+    | '/admin'
+    | '/admin/pages/new'
+    | '/admin/pages'
+    | '/admin/pages/$id/edit'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/pages/new'
     | '/_authenticated/admin/pages/'
+    | '/_authenticated/admin/pages/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,17 +152,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPagesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/pages/new': {
+      id: '/_authenticated/admin/pages/new'
+      path: '/admin/pages/new'
+      fullPath: '/admin/pages/new'
+      preLoaderRoute: typeof AuthenticatedAdminPagesNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/pages/$id/edit': {
+      id: '/_authenticated/admin/pages/$id/edit'
+      path: '/admin/pages/$id/edit'
+      fullPath: '/admin/pages/$id/edit'
+      preLoaderRoute: typeof AuthenticatedAdminPagesIdEditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminPagesNewRoute: typeof AuthenticatedAdminPagesNewRoute
   AuthenticatedAdminPagesIndexRoute: typeof AuthenticatedAdminPagesIndexRoute
+  AuthenticatedAdminPagesIdEditRoute: typeof AuthenticatedAdminPagesIdEditRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminPagesNewRoute: AuthenticatedAdminPagesNewRoute,
   AuthenticatedAdminPagesIndexRoute: AuthenticatedAdminPagesIndexRoute,
+  AuthenticatedAdminPagesIdEditRoute: AuthenticatedAdminPagesIdEditRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
