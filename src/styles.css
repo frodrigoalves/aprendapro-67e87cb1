@@ -43,74 +43,74 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Light, disruptive theme inspired by the brand logo (blue → purple → orange) */
+/* Corporate light theme — refined navy, slate and a single brand accent */
 :root {
-  --radius: 0.875rem;
+  --radius: 0.75rem;
 
-  --background: oklch(0.99 0.005 250);
-  --foreground: oklch(0.18 0.04 270);
+  --background: oklch(0.995 0.003 250);
+  --foreground: oklch(0.20 0.03 255);
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.04 270);
+  --card-foreground: oklch(0.20 0.03 255);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.04 270);
+  --popover-foreground: oklch(0.20 0.03 255);
 
-  /* Primary: vibrant electric blue (matches logo "Pro") */
-  --primary: oklch(0.62 0.22 255);
+  /* Primary: deep corporate blue */
+  --primary: oklch(0.45 0.16 258);
   --primary-foreground: oklch(0.99 0 0);
-  --primary-glow: oklch(0.72 0.20 295);
+  --primary-glow: oklch(0.62 0.16 250);
 
-  --secondary: oklch(0.96 0.015 270);
-  --secondary-foreground: oklch(0.22 0.04 270);
+  --secondary: oklch(0.965 0.008 250);
+  --secondary-foreground: oklch(0.25 0.04 255);
 
-  --muted: oklch(0.96 0.012 260);
-  --muted-foreground: oklch(0.50 0.03 270);
+  --muted: oklch(0.97 0.006 250);
+  --muted-foreground: oklch(0.48 0.02 255);
 
-  --accent: oklch(0.95 0.04 295);
-  --accent-foreground: oklch(0.30 0.10 295);
+  --accent: oklch(0.95 0.02 250);
+  --accent-foreground: oklch(0.28 0.08 255);
 
-  --destructive: oklch(0.62 0.22 25);
+  --destructive: oklch(0.55 0.20 25);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --success: oklch(0.65 0.18 150);
-  --success-foreground: oklch(0.14 0.02 150);
+  --success: oklch(0.58 0.14 160);
+  --success-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.92 0.01 270);
-  --input: oklch(0.94 0.012 270);
-  --ring: oklch(0.62 0.22 255);
+  --border: oklch(0.92 0.008 250);
+  --input: oklch(0.94 0.008 250);
+  --ring: oklch(0.45 0.16 258);
 
-  --sidebar: oklch(0.985 0.006 270);
-  --sidebar-foreground: oklch(0.25 0.03 270);
-  --sidebar-primary: oklch(0.62 0.22 255);
+  --sidebar: oklch(0.22 0.04 258);
+  --sidebar-foreground: oklch(0.92 0.01 250);
+  --sidebar-primary: oklch(0.65 0.16 245);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.95 0.02 280);
-  --sidebar-accent-foreground: oklch(0.25 0.06 280);
-  --sidebar-border: oklch(0.92 0.01 270);
-  --sidebar-ring: oklch(0.62 0.22 255);
+  --sidebar-accent: oklch(0.28 0.05 258);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.30 0.04 258);
+  --sidebar-ring: oklch(0.65 0.16 245);
 
-  /* Brand gradient (logo: blue → purple → orange) */
-  --brand-blue: oklch(0.68 0.20 245);
-  --brand-purple: oklch(0.58 0.24 305);
-  --brand-orange: oklch(0.72 0.20 45);
+  /* Brand tones for gradients (kept subtle, corporate) */
+  --brand-navy: oklch(0.30 0.08 258);
+  --brand-blue: oklch(0.55 0.16 250);
+  --brand-azure: oklch(0.72 0.13 235);
+  --brand-slate: oklch(0.50 0.03 255);
 
-  --gradient-primary: linear-gradient(135deg, var(--brand-blue), var(--brand-purple), var(--brand-orange));
-  --gradient-text: linear-gradient(90deg, var(--brand-blue), var(--brand-purple) 55%, var(--brand-orange));
+  --gradient-primary: linear-gradient(135deg, var(--brand-navy), var(--brand-blue));
+  --gradient-text: linear-gradient(90deg, var(--brand-navy), var(--brand-blue) 60%, var(--brand-azure));
 
-  /* Disruptive background: aurora-like radial blooms over white */
+  /* Disruptive yet sober background: soft mesh over near-white */
   --gradient-hero:
-    radial-gradient(60% 50% at 12% 18%, color-mix(in oklab, var(--brand-blue) 28%, transparent), transparent 70%),
-    radial-gradient(55% 45% at 88% 22%, color-mix(in oklab, var(--brand-orange) 22%, transparent), transparent 70%),
-    radial-gradient(70% 60% at 50% 110%, color-mix(in oklab, var(--brand-purple) 26%, transparent), transparent 70%),
-    linear-gradient(180deg, oklch(0.995 0 0), oklch(0.97 0.01 270));
+    radial-gradient(55% 45% at 10% 10%, color-mix(in oklab, var(--brand-blue) 16%, transparent), transparent 70%),
+    radial-gradient(50% 40% at 95% 15%, color-mix(in oklab, var(--brand-azure) 14%, transparent), transparent 70%),
+    radial-gradient(70% 60% at 50% 120%, color-mix(in oklab, var(--brand-navy) 14%, transparent), transparent 70%),
+    linear-gradient(180deg, oklch(0.995 0 0), oklch(0.97 0.006 250));
 
   --gradient-mesh:
-    radial-gradient(40% 35% at 20% 30%, color-mix(in oklab, var(--brand-blue) 18%, transparent), transparent 70%),
-    radial-gradient(35% 30% at 80% 70%, color-mix(in oklab, var(--brand-orange) 16%, transparent), transparent 70%),
-    radial-gradient(45% 40% at 60% 20%, color-mix(in oklab, var(--brand-purple) 18%, transparent), transparent 70%);
+    radial-gradient(40% 35% at 20% 30%, color-mix(in oklab, var(--brand-blue) 10%, transparent), transparent 70%),
+    radial-gradient(35% 30% at 80% 70%, color-mix(in oklab, var(--brand-azure) 10%, transparent), transparent 70%);
 
-  --shadow-glow: 0 24px 80px -24px color-mix(in oklab, var(--brand-purple) 45%, transparent);
-  --shadow-elegant: 0 12px 40px -16px color-mix(in oklab, var(--brand-blue) 30%, transparent);
+  --shadow-glow: 0 24px 70px -28px color-mix(in oklab, var(--brand-blue) 45%, transparent);
+  --shadow-elegant: 0 12px 32px -16px color-mix(in oklab, var(--brand-navy) 25%, transparent);
 }
 
 @layer base {
