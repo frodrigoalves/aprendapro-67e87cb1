@@ -44,7 +44,7 @@ export function PageEditor({ initial }: Props) {
       product_name: productName.trim(),
       slug: slug.trim(),
       status,
-      sections: sections as unknown as Record<string, unknown>,
+      sections: sections as never,
     };
     try {
       if (id) {
