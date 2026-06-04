@@ -43,74 +43,75 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Corporate light theme — refined navy, slate and a single brand accent */
+/* Corporate light theme — refined navy and slate, single brand accent */
 :root {
-  --radius: 0.75rem;
+  --radius: 0.625rem;
 
-  --background: oklch(0.995 0.003 250);
-  --foreground: oklch(0.20 0.03 255);
+  --background: oklch(0.985 0.003 250);
+  --foreground: oklch(0.18 0.025 255);
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.20 0.03 255);
+  --card-foreground: oklch(0.18 0.025 255);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.20 0.03 255);
+  --popover-foreground: oklch(0.18 0.025 255);
 
-  /* Primary: deep corporate blue */
-  --primary: oklch(0.45 0.16 258);
+  /* Primary: refined corporate navy-blue */
+  --primary: oklch(0.42 0.12 255);
   --primary-foreground: oklch(0.99 0 0);
-  --primary-glow: oklch(0.62 0.16 250);
+  --primary-glow: oklch(0.58 0.12 250);
 
-  --secondary: oklch(0.965 0.008 250);
-  --secondary-foreground: oklch(0.25 0.04 255);
+  --secondary: oklch(0.96 0.005 250);
+  --secondary-foreground: oklch(0.25 0.03 255);
 
-  --muted: oklch(0.97 0.006 250);
-  --muted-foreground: oklch(0.48 0.02 255);
+  --muted: oklch(0.965 0.004 250);
+  --muted-foreground: oklch(0.48 0.015 255);
 
-  --accent: oklch(0.95 0.02 250);
-  --accent-foreground: oklch(0.28 0.08 255);
+  --accent: oklch(0.94 0.012 255);
+  --accent-foreground: oklch(0.28 0.06 255);
 
-  --destructive: oklch(0.55 0.20 25);
+  --destructive: oklch(0.55 0.18 25);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --success: oklch(0.58 0.14 160);
+  --success: oklch(0.55 0.12 160);
   --success-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.92 0.008 250);
-  --input: oklch(0.94 0.008 250);
-  --ring: oklch(0.45 0.16 258);
+  --border: oklch(0.91 0.006 250);
+  --input: oklch(0.93 0.006 250);
+  --ring: oklch(0.42 0.12 255);
 
-  --sidebar: oklch(0.22 0.04 258);
-  --sidebar-foreground: oklch(0.92 0.01 250);
-  --sidebar-primary: oklch(0.65 0.16 245);
+  --sidebar: oklch(0.21 0.03 255);
+  --sidebar-foreground: oklch(0.90 0.008 250);
+  --sidebar-primary: oklch(0.62 0.14 245);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.28 0.05 258);
+  --sidebar-accent: oklch(0.26 0.035 255);
   --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.30 0.04 258);
-  --sidebar-ring: oklch(0.65 0.16 245);
+  --sidebar-border: oklch(0.28 0.03 255);
+  --sidebar-ring: oklch(0.62 0.14 245);
 
-  /* Brand tones for gradients (kept subtle, corporate) */
-  --brand-navy: oklch(0.30 0.08 258);
-  --brand-blue: oklch(0.55 0.16 250);
-  --brand-azure: oklch(0.72 0.13 235);
-  --brand-slate: oklch(0.50 0.03 255);
+  /* Brand tones — restrained corporate palette */
+  --brand-navy: oklch(0.26 0.06 258);
+  --brand-blue: oklch(0.48 0.13 252);
+  --brand-azure: oklch(0.66 0.10 240);
+  --brand-slate: oklch(0.55 0.02 255);
 
   --gradient-primary: linear-gradient(135deg, var(--brand-navy), var(--brand-blue));
   --gradient-text: linear-gradient(90deg, var(--brand-navy), var(--brand-blue) 60%, var(--brand-azure));
+  --gradient-hero-dark: linear-gradient(135deg, oklch(0.18 0.04 258), oklch(0.26 0.07 252) 60%, oklch(0.32 0.08 245));
 
-  /* Disruptive yet sober background: soft mesh over near-white */
+  /* Sober background mesh on near-white */
   --gradient-hero:
-    radial-gradient(55% 45% at 10% 10%, color-mix(in oklab, var(--brand-blue) 16%, transparent), transparent 70%),
-    radial-gradient(50% 40% at 95% 15%, color-mix(in oklab, var(--brand-azure) 14%, transparent), transparent 70%),
-    radial-gradient(70% 60% at 50% 120%, color-mix(in oklab, var(--brand-navy) 14%, transparent), transparent 70%),
-    linear-gradient(180deg, oklch(0.995 0 0), oklch(0.97 0.006 250));
+    radial-gradient(55% 45% at 10% 10%, color-mix(in oklab, var(--brand-blue) 12%, transparent), transparent 70%),
+    radial-gradient(50% 40% at 95% 15%, color-mix(in oklab, var(--brand-azure) 10%, transparent), transparent 70%),
+    radial-gradient(70% 60% at 50% 120%, color-mix(in oklab, var(--brand-navy) 10%, transparent), transparent 70%),
+    linear-gradient(180deg, oklch(0.995 0 0), oklch(0.97 0.005 250));
 
   --gradient-mesh:
-    radial-gradient(40% 35% at 20% 30%, color-mix(in oklab, var(--brand-blue) 10%, transparent), transparent 70%),
-    radial-gradient(35% 30% at 80% 70%, color-mix(in oklab, var(--brand-azure) 10%, transparent), transparent 70%);
+    radial-gradient(40% 35% at 20% 30%, color-mix(in oklab, var(--brand-blue) 8%, transparent), transparent 70%),
+    radial-gradient(35% 30% at 80% 70%, color-mix(in oklab, var(--brand-azure) 7%, transparent), transparent 70%);
 
-  --shadow-glow: 0 24px 70px -28px color-mix(in oklab, var(--brand-blue) 45%, transparent);
-  --shadow-elegant: 0 12px 32px -16px color-mix(in oklab, var(--brand-navy) 25%, transparent);
+  --shadow-glow: 0 20px 60px -28px color-mix(in oklab, var(--brand-blue) 38%, transparent);
+  --shadow-elegant: 0 10px 30px -16px color-mix(in oklab, var(--brand-navy) 22%, transparent);
 }
 
 @layer base {
