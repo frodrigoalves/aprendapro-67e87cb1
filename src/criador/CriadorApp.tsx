@@ -479,7 +479,7 @@ function XlsxWizard() {
   const [rows, setRows] = useState<(string | number | null)[][]>([
     ["Exemplo", 1, 100],
   ]);
-  const [accentHex, setAccentHex] = useState(CURATED_ACCENT_COLORS[0].hex);
+  const [accentHex, setAccentHex] = useState<string>(CURATED_ACCENT_COLORS[0].hex);
   const [busy, setBusy] = useState(false);
 
   function updateColumns(next: XlsxColumn[]) {
