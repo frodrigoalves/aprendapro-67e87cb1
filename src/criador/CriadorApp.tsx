@@ -310,8 +310,8 @@ function PptWizard() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [slides, setSlides] = useState<PptSlide[]>([{ layout: "capa", title: "" }]);
-  const [fontFamily, setFontFamily] = useState(CURATED_FONTS[0]);
-  const [accentHex, setAccentHex] = useState(CURATED_ACCENT_COLORS[1].hex);
+  const [fontFamily, setFontFamily] = useState<string>(CURATED_FONTS[0]);
+  const [accentHex, setAccentHex] = useState<string>(CURATED_ACCENT_COLORS[1].hex);
   const [busy, setBusy] = useState(false);
 
   const canNext =
