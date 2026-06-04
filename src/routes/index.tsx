@@ -17,12 +17,12 @@ function Landing() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-hero">
       {/* Decorative blurred blobs */}
-      <div aria-hidden className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full opacity-60 blur-3xl"
+      <div aria-hidden className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full opacity-50 blur-3xl"
         style={{ background: "radial-gradient(circle, var(--brand-blue), transparent 65%)" }} />
-      <div aria-hidden className="pointer-events-none absolute top-1/3 -right-40 h-[480px] w-[480px] rounded-full opacity-50 blur-3xl"
-        style={{ background: "radial-gradient(circle, var(--brand-orange), transparent 65%)" }} />
-      <div aria-hidden className="pointer-events-none absolute -bottom-40 left-1/3 h-[520px] w-[520px] rounded-full opacity-50 blur-3xl"
-        style={{ background: "radial-gradient(circle, var(--brand-purple), transparent 65%)" }} />
+      <div aria-hidden className="pointer-events-none absolute top-1/3 -right-40 h-[480px] w-[480px] rounded-full opacity-40 blur-3xl"
+        style={{ background: "radial-gradient(circle, var(--brand-azure), transparent 65%)" }} />
+      <div aria-hidden className="pointer-events-none absolute -bottom-40 left-1/3 h-[520px] w-[520px] rounded-full opacity-40 blur-3xl"
+        style={{ background: "radial-gradient(circle, var(--brand-navy), transparent 65%)" }} />
 
       <header className="relative z-10 flex items-center justify-between px-5 sm:px-10 py-5">
         <Logo className="h-9 sm:h-10" />
