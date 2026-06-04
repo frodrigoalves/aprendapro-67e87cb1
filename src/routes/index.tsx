@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Logo } from "@/components/brand/Logo";
 
 export const Route = createFileRoute("/")({
@@ -42,6 +42,15 @@ function Landing() {
           performance.
         </p>
       </main>
+
+      {/* Discreet admin access */}
+      <Link
+        to="/login"
+        aria-label="Acesso administrativo"
+        className="absolute bottom-4 right-4 z-20 text-xs text-muted-foreground/60 hover:text-foreground transition-colors"
+      >
+        Acesso
+      </Link>
     </div>
   );
 }
