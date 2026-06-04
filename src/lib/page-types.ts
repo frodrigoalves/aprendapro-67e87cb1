@@ -28,7 +28,7 @@ export const emptySections = (): PageSections => ({
     subtitle: "",
     cta_text: "Quero garantir minha vaga",
     cta_link: "",
-    bg_color: "#0F0A1F",
+    bg_color: "#0B1B3A",
   },
   promise: { text: "" },
   audience: { text: "" },
