@@ -126,8 +126,8 @@
   }
   body {
     background-image:
-      radial-gradient(1200px 600px at 0% -10%, color-mix(in oklab, var(--brand-blue) 8%, transparent), transparent 60%),
-      radial-gradient(900px 500px at 100% 0%, color-mix(in oklab, var(--brand-orange) 7%, transparent), transparent 60%);
+      radial-gradient(900px 500px at 0% -10%, color-mix(in oklab, var(--brand-blue) 6%, transparent), transparent 60%),
+      radial-gradient(800px 480px at 100% 0%, color-mix(in oklab, var(--brand-azure) 5%, transparent), transparent 60%);
     background-attachment: fixed;
   }
   h1, h2, h3 { letter-spacing: -0.02em; }
