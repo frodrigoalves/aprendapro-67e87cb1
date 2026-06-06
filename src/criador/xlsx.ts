@@ -17,8 +17,17 @@ export interface XlsxInput {
   mode: CriadorMode;
   title: string;
   columns: XlsxColumn[];
-  rows: (string | number | null)[][];
+  rows: (string | number | Date | null)[][];
   accentHex?: string;
+  /** When provided, an extra "Resumo" sheet is appended with KPIs and a grouping table. */
+  bi?: {
+    measure: string;
+    dimension?: string;
+    fmt: "num" | "money" | "pct";
+    kpis: { label: string; value: number; fmt: "num" | "money" | "pct" }[];
+    groupBy?: { name: string; value: number }[];
+    timeSeries?: { name: string; value: number }[];
+  };
 }
 
 function numFmtFor(t: ColType): string | undefined {
