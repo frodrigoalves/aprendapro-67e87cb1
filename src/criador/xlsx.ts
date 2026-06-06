@@ -1,6 +1,7 @@
 // Excel (.xlsx) generator using exceljs
 import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+import FileSaver from "file-saver";
+const { saveAs } = FileSaver;
 import type { XlsxTemplate, CriadorMode } from "./types";
 
 export type ColType = "texto" | "numero" | "percentual" | "moeda" | "data" | "lista";
