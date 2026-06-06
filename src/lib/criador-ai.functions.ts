@@ -51,9 +51,9 @@ export const suggestSpreadsheetFromText = createServerFn({ method: "POST" })
     z.object({ description: z.string().min(3).max(800) }).parse(input),
   )
   .handler(async ({ data }) => {
-    const base = process.env.OLLAMA_BASE_URL;
-    const model = process.env.OLLAMA_MODEL || "mistral";
-    const apiKey = process.env.OLLAMA_API_KEY;
+    const base = process.env.AI_ENGINE_URL;
+    const model = process.env.AI_ENGINE_MODEL === "primary" ? "mistral" : (process.env.AI_ENGINE_MODEL || "primary";
+    const apiKey = process.env.AI_ENGINE_KEY;
     if (!base) return { fallback: true as const, reason: "OLLAMA_BASE_URL not set" };
 
     const ctrl = new AbortController();
