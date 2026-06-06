@@ -473,6 +473,8 @@ function PptWizard() {
 
 /* ===================== XLSX WIZARD ===================== */
 
+type DataSource = "ai" | "paste" | "csv" | "template" | "manual";
+
 function XlsxWizard() {
   const [step, setStep] = useState(1);
   const total = 4;
@@ -484,11 +486,90 @@ function XlsxWizard() {
     { header: "Quantidade", type: "numero" },
     { header: "Valor", type: "moeda" },
   ]);
-  const [rows, setRows] = useState<(string | number | null)[][]>([
-    ["Exemplo", 1, 100],
-  ]);
+  const [rows, setRows] = useState<(string | number | Date | null)[][]>([["Exemplo", 1, 100]]);
   const [accentHex, setAccentHex] = useState<string>(CURATED_ACCENT_COLORS[0].hex);
   const [busy, setBusy] = useState(false);
+  const [source, setSource] = useState<DataSource>("template");
+  const [aiDesc, setAiDesc] = useState("");
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [pasted, setPasted] = useState("");
+  const [includeBi, setIncludeBi] = useState(true);
+  const [biMeasure, setBiMeasure] = useState<string | undefined>();
+  const [biDimension, setBiDimension] = useState<string | undefined>();
+  const [biDate, setBiDate] = useState<string | undefined>();
+
+  const callAi = useServerFn(suggestSpreadsheetFromText);
+
+  const biOpts = useMemo(() => {
+    const auto = autoPickBiOpts(columns);
+    return {
+      measure: biMeasure ?? auto.measure,
+      dimension: biDimension ?? auto.dimension,
+      date: biDate ?? auto.date,
+    };
+  }, [columns, biMeasure, biDimension, biDate]);
+
+  const bi = useMemo(() => computeBi(columns, rows, biOpts), [columns, rows, biOpts]);
+  const issues: ValidationIssue[] = useMemo(() => validate(columns, rows), [columns, rows]);
+  const errors = issues.filter((i) => i.level === "error");
+
+  function applyHeadersAndRows(headers: string[], strRows: string[][]) {
+    const inferred = inferColumns(headers, strRows);
+    setColumns(inferred);
+    setRows(coerceRows(strRows, inferred.map((c) => c.type)));
+    setBiMeasure(undefined);
+    setBiDimension(undefined);
+    setBiDate(undefined);
+  }
+
+  function loadBlueprint(id: string) {
+    const bp = BLUEPRINTS.find((b) => b.id === id);
+    if (!bp) return;
+    setColumns(bp.columns);
+    setRows(bp.sample);
+    if (!title) setTitle(bp.title);
+    setBiMeasure(bp.bi?.measure);
+    setBiDimension(bp.bi?.dimension);
+    setBiDate(bp.bi?.date);
+  }
+
+  function handlePaste() {
+    const { headers, rows: r } = fromPasted(pasted);
+    if (!headers.length) return;
+    applyHeadersAndRows(headers, r);
+  }
+
+  async function handleCsvFile(file: File) {
+    const text = await file.text();
+    const { headers, rows: r } = fromPasted(text);
+    if (!headers.length) return;
+    applyHeadersAndRows(headers, r);
+    if (!title) setTitle(file.name.replace(/\.[^.]+$/, ""));
+  }
+
+  async function handleAi() {
+    setAiBusy(true);
+    setAiError(null);
+    try {
+      const result = await callAi({ data: { description: aiDesc } });
+      if (result.fallback) {
+        setAiError("IA indisponível no momento — escolha um modelo pronto ou edite manualmente.");
+      } else {
+        const s = result.suggestion;
+        setColumns(s.columns.map((c) => ({ header: c.header, type: c.type as ColType, list: c.list })));
+        setRows([]);
+        if (!title) setTitle(s.title);
+        setBiMeasure(s.bi?.measure);
+        setBiDimension(s.bi?.dimension);
+        setBiDate(s.bi?.date);
+      }
+    } catch (e) {
+      setAiError((e as Error).message);
+    } finally {
+      setAiBusy(false);
+    }
+  }
 
   function updateColumns(next: XlsxColumn[]) {
     setColumns(next);
@@ -499,30 +580,37 @@ function XlsxWizard() {
     setBusy(true);
     try {
       await generateXlsx({
-        template, mode, title: title || "Planilha", columns, rows,
+        template,
+        mode,
+        title: title || "Planilha",
+        columns,
+        rows,
         accentHex: mode === "personalizavel" ? accentHex : undefined,
+        bi: includeBi && bi ? bi : undefined,
       });
-    } finally { setBusy(false); }
+    } finally {
+      setBusy(false);
+    }
   }
 
   const canNext =
     (step === 1 && !!template) ||
     (step === 2 && title.trim().length > 0) ||
-    (step === 3 && columns.length > 0 && columns.every((c) => c.header.trim().length > 0)) ||
+    (step === 3 && columns.length > 0 && columns.every((c) => c.header.trim().length > 0) && errors.length === 0) ||
     step === 4;
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-5xl">
       <div className="mb-8"><CriadorProgress step={step} total={total} /></div>
 
       {step === 1 && (
         <CriadorCard>
-          <h2 className="mb-1 text-xl font-semibold">Escolha o modelo</h2>
-          <p className="mb-6 text-sm text-neutral-600">Cada modelo aplica formatação profissional.</p>
+          <h2 className="mb-1 text-xl font-semibold">Estilo e modo</h2>
+          <p className="mb-6 text-sm text-neutral-600">Defina o visual base — você poderá importar dados ou pedir à IA na próxima etapa.</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {([
-              { id: "tabela", title: "Tabela Profissional", desc: "Cabeçalho e auto-filtro." },
-              { id: "controle", title: "Controle / Lista", desc: "Listas e categorias." },
+              { id: "tabela", title: "Tabela Profissional", desc: "Cabeçalho + auto-filtro." },
+              { id: "controle", title: "Controle / Lista", desc: "Categorias com validação." },
               { id: "relatorio", title: "Relatório com Totais", desc: "Soma automática." },
               { id: "branco", title: "Em Branco", desc: "Colunas tipadas livres." },
             ] as { id: XlsxTemplate; title: string; desc: string }[]).map((p) => (
@@ -540,17 +628,92 @@ function XlsxWizard() {
 
       {step === 2 && (
         <CriadorCard>
-          <h2 className="mb-1 text-xl font-semibold">Informações</h2>
-          <div className="mt-4"><CriadorField label="Título da planilha">
-            <CriadorInput value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex: Controle Financeiro" />
-          </CriadorField></div>
+          <h2 className="mb-1 text-xl font-semibold">Como vamos começar?</h2>
+          <p className="mb-5 text-sm text-neutral-600">Escolha a forma mais rápida — você ainda poderá editar tudo.</p>
+
+          <div className="mb-5 flex flex-wrap gap-2">
+            {([
+              { id: "ai", icon: Sparkles, label: "Descrever com IA" },
+              { id: "template", icon: LayoutTemplate, label: "Modelo pronto" },
+              { id: "paste", icon: ClipboardPaste, label: "Colar tabela" },
+              { id: "csv", icon: FileUp, label: "Importar CSV" },
+              { id: "manual", icon: Plus, label: "Do zero" },
+            ] as { id: DataSource; icon: typeof Sparkles; label: string }[]).map((s) => {
+              const Icon = s.icon;
+              return (
+                <button key={s.id} onClick={() => setSource(s.id)}
+                  className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${source === s.id ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400"}`}>
+                  <Icon className="h-3.5 w-3.5" strokeWidth={1.5} /> {s.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <CriadorField label="Título da planilha">
+            <CriadorInput value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex: Controle Financeiro 2026" />
+          </CriadorField>
+
+          {source === "ai" && (
+            <div className="mt-5 space-y-3">
+              <CriadorField label="Descreva o que você precisa" hint="Ex: controle mensal de vendas por vendedor, com meta e comissão.">
+                <CriadorTextarea value={aiDesc} onChange={(e) => setAiDesc(e.target.value)} placeholder="Descreva em uma ou duas frases..." />
+              </CriadorField>
+              <div className="flex items-center gap-3">
+                <CriadorButton onClick={handleAi} disabled={aiBusy || aiDesc.trim().length < 3}>
+                  {aiBusy ? <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.5} /> : <Sparkles className="h-4 w-4" strokeWidth={1.5} />}
+                  Gerar estrutura com IA
+                </CriadorButton>
+                {aiError && <span className="text-xs text-amber-700">{aiError}</span>}
+              </div>
+            </div>
+          )}
+
+          {source === "template" && (
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {BLUEPRINTS.map((bp) => (
+                <button key={bp.id} onClick={() => loadBlueprint(bp.id)}
+                  className="rounded-lg border border-neutral-200 bg-white p-4 text-left transition hover:border-neutral-900 hover:shadow-sm">
+                  <div className="text-sm font-semibold">{bp.name}</div>
+                  <div className="mt-1 text-xs text-neutral-600">{bp.desc}</div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {source === "paste" && (
+            <div className="mt-5 space-y-3">
+              <CriadorField label="Cole sua tabela" hint="Colunas separadas por TAB, vírgula ou ponto-e-vírgula. Primeira linha = cabeçalhos.">
+                <CriadorTextarea value={pasted} onChange={(e) => setPasted(e.target.value)} placeholder={"Data\tCliente\tValor\n01/02/2026\tACME\tR$ 1.500,00"} className="min-h-[160px] font-mono text-xs" />
+              </CriadorField>
+              <CriadorButton onClick={handlePaste} disabled={pasted.trim().length === 0}>
+                Detectar colunas e tipos
+              </CriadorButton>
+            </div>
+          )}
+
+          {source === "csv" && (
+            <div className="mt-5">
+              <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-md border border-neutral-300 bg-white px-3 text-sm hover:bg-neutral-50">
+                <FileUp className="h-4 w-4" strokeWidth={1.5} /> Selecionar arquivo CSV/TSV
+                <input type="file" accept=".csv,.tsv,.txt" className="hidden"
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) void handleCsvFile(f); }} />
+              </label>
+              <p className="mt-2 text-xs text-neutral-500">O arquivo nunca sai do seu navegador.</p>
+            </div>
+          )}
+
+          {columns.length > 0 && source !== "manual" && (
+            <div className="mt-6 rounded-lg border border-neutral-200 bg-neutral-50 p-3 text-xs text-neutral-600">
+              <strong className="text-neutral-900">{columns.length} colunas</strong> detectadas · {rows.length} linha(s) carregada(s). Avance para revisar.
+            </div>
+          )}
         </CriadorCard>
       )}
 
       {step === 3 && (
         <CriadorCard>
           <h2 className="mb-1 text-xl font-semibold">Colunas e dados</h2>
-          <p className="mb-6 text-sm text-neutral-600">Defina colunas tipadas e preencha as linhas.</p>
+          <p className="mb-6 text-sm text-neutral-600">Revise tipos, fórmulas e linhas. O sistema valida antes do download.</p>
 
           <div className="space-y-2">
             {columns.map((c, i) => (
@@ -594,7 +757,7 @@ function XlsxWizard() {
                       {columns.map((_, ci) => (
                         <td key={ci} className="p-1">
                           <input className="h-9 w-full rounded border border-transparent px-2 hover:border-neutral-200 focus:border-neutral-900 focus:outline-none"
-                            value={String(r[ci] ?? "")}
+                            value={r[ci] instanceof Date ? (r[ci] as Date).toLocaleDateString("pt-BR") : String(r[ci] ?? "")}
                             onChange={(e) => { const a = rows.map((row) => [...row]); a[ri][ci] = e.target.value; setRows(a); }} />
                         </td>
                       ))}
@@ -615,6 +778,17 @@ function XlsxWizard() {
             </div>
           </div>
 
+          {issues.length > 0 && (
+            <div className="mt-6 space-y-1.5">
+              {issues.map((iss, i) => (
+                <div key={i} className={`flex items-start gap-2 rounded-md border p-2.5 text-xs ${iss.level === "error" ? "border-red-200 bg-red-50 text-red-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}>
+                  <AlertTriangle className="mt-0.5 h-3.5 w-3.5 flex-none" strokeWidth={1.5} />
+                  <span>{iss.message}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           {mode === "personalizavel" && (
             <CustomizationBlock onlyAccent fontFamily="" setFontFamily={() => {}} accentHex={accentHex} setAccentHex={setAccentHex} />
           )}
@@ -623,29 +797,83 @@ function XlsxWizard() {
 
       {step === 4 && (
         <CriadorCard>
-          <h2 className="mb-1 text-xl font-semibold">Pré-visualização</h2>
-          <PreviewBlock>
-            <h3 className="text-lg font-bold">{title || "Sem título"}</h3>
+          <h2 className="mb-1 text-xl font-semibold">Pré-visualização e BI</h2>
+          <p className="mb-5 text-sm text-neutral-600">Confira a planilha e o dashboard antes de baixar.</p>
+
+          <div className="rounded-lg border border-neutral-200 bg-white p-5">
+            <h3 className="text-base font-bold text-neutral-900">{title || "Sem título"}</h3>
             <div className="mt-3 overflow-x-auto">
               <table className="w-full text-xs">
                 <thead><tr style={{ background: `#${accentHex}`, color: "white" }}>
-                  {columns.map((c, i) => <th key={i} className="px-2 py-1.5 text-left">{c.header}</th>)}
+                  {columns.map((c, i) => <th key={i} className="px-2.5 py-2 text-left font-semibold">{c.header}</th>)}
                 </tr></thead>
                 <tbody>
-                  {rows.slice(0, 5).map((r, ri) => (
-                    <tr key={ri} className="border-b border-neutral-200">
-                      {columns.map((_, ci) => <td key={ci} className="px-2 py-1.5">{String(r[ci] ?? "")}</td>)}
+                  {rows.slice(0, 10).map((r, ri) => (
+                    <tr key={ri} className="border-b border-neutral-100 even:bg-neutral-50/50">
+                      {columns.map((c, ci) => (
+                        <td key={ci} className="px-2.5 py-1.5 tabular-nums">
+                          {formatPreviewCell(r[ci], c.type)}
+                        </td>
+                      ))}
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <div className="mt-2 text-xs text-neutral-500">{rows.length} linha(s) • {columns.length} coluna(s)</div>
-          </PreviewBlock>
-          <div className="mt-6 flex justify-end">
-            <CriadorButton onClick={handleDownload} disabled={busy}>
+            <div className="mt-2 text-xs text-neutral-500">{rows.length} linha(s) · {columns.length} coluna(s){rows.length > 10 ? " — exibindo as 10 primeiras" : ""}</div>
+          </div>
+
+          <div className="mt-6 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
+            <label className="flex cursor-pointer items-start gap-3">
+              <input type="checkbox" className="mt-1 h-4 w-4" checked={includeBi} onChange={(e) => setIncludeBi(e.target.checked)} />
+              <div className="flex-1">
+                <div className="flex items-center gap-2 text-sm font-semibold text-neutral-900">
+                  <BarChart3 className="h-4 w-4" strokeWidth={1.5} /> Incluir aba Resumo / BI no .xlsx
+                </div>
+                <p className="mt-0.5 text-xs text-neutral-600">KPIs, agrupamento por categoria e série temporal — gerados automaticamente.</p>
+              </div>
+            </label>
+
+            {includeBi && (
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <CriadorField label="Medida (número/moeda)">
+                  <CriadorSelect value={biOpts.measure ?? ""} onChange={(e) => setBiMeasure(e.target.value || undefined)}>
+                    <option value="">(automático)</option>
+                    {columns.filter((c) => ["numero", "moeda", "percentual"].includes(c.type)).map((c) => (
+                      <option key={c.header} value={c.header}>{c.header}</option>
+                    ))}
+                  </CriadorSelect>
+                </CriadorField>
+                <CriadorField label="Dimensão (categoria)">
+                  <CriadorSelect value={biOpts.dimension ?? ""} onChange={(e) => setBiDimension(e.target.value || undefined)}>
+                    <option value="">(automático)</option>
+                    {columns.filter((c) => ["texto", "lista"].includes(c.type)).map((c) => (
+                      <option key={c.header} value={c.header}>{c.header}</option>
+                    ))}
+                  </CriadorSelect>
+                </CriadorField>
+                <CriadorField label="Data (opcional)">
+                  <CriadorSelect value={biOpts.date ?? ""} onChange={(e) => setBiDate(e.target.value || undefined)}>
+                    <option value="">(automático)</option>
+                    {columns.filter((c) => c.type === "data").map((c) => (
+                      <option key={c.header} value={c.header}>{c.header}</option>
+                    ))}
+                  </CriadorSelect>
+                </CriadorField>
+              </div>
+            )}
+          </div>
+
+          {includeBi && bi && (
+            <div className="mt-6">
+              <BiPreview bi={bi} accentHex={accentHex} />
+            </div>
+          )}
+
+          <div className="mt-8 flex justify-end">
+            <CriadorButton onClick={handleDownload} disabled={busy || errors.length > 0}>
               {busy ? <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.5} /> : <Download className="h-4 w-4" strokeWidth={1.5} />}
-              Baixar .xlsx
+              Baixar .xlsx{includeBi && bi ? " + Resumo" : ""}
             </CriadorButton>
           </div>
         </CriadorCard>
@@ -655,6 +883,18 @@ function XlsxWizard() {
     </div>
   );
 }
+
+function formatPreviewCell(v: string | number | Date | null, type: ColType): string {
+  if (v == null || v === "") return "";
+  if (v instanceof Date) return v.toLocaleDateString("pt-BR");
+  if (typeof v === "number") {
+    if (type === "moeda") return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    if (type === "percentual") return (v * 100).toFixed(1) + "%";
+    return v.toLocaleString("pt-BR", { maximumFractionDigits: 2 });
+  }
+  return String(v);
+}
+
 
 /* ===================== SHARED ===================== */
 
