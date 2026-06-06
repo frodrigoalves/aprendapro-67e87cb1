@@ -20,7 +20,8 @@ import {
   convertInchesToTwip,
   convertMillimetersToTwip,
 } from "docx";
-import { saveAs } from "file-saver";
+import FileSaver from "file-saver";
+const { saveAs } = FileSaver;
 import type { DocPreset, CriadorMode } from "./types";
 
 export interface DocSection {
