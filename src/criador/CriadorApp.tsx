@@ -1,10 +1,18 @@
-import { useState } from "react";
-import { FileText, Presentation, Sheet, ChevronLeft, ChevronRight, Plus, Trash2, Download, Upload, Loader2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { FileText, Presentation, Sheet, ChevronLeft, ChevronRight, Plus, Trash2, Download, Upload, Loader2, Sparkles, ClipboardPaste, FileUp, LayoutTemplate, AlertTriangle, BarChart3 } from "lucide-react";
 import { CriadorButton, CriadorCard, CriadorField, CriadorInput, CriadorProgress, CriadorSelect, CriadorTextarea } from "./ui";
 import { CURATED_ACCENT_COLORS, CURATED_FONTS, type CriadorMode, type DocPreset, type PptStyle, type XlsxTemplate } from "./types";
 import { generateDoc, type DocSection, type DocTable } from "./word";
 import { generatePpt, type PptSlide, type SlideLayout } from "./pptx";
 import { generateXlsx, type ColType, type XlsxColumn } from "./xlsx";
+import { BLUEPRINTS } from "./engine/templates";
+import { fromPasted } from "./engine/csvImport";
+import { inferColumns, coerceRows } from "./engine/typeInfer";
+import { validate, type ValidationIssue } from "./engine/validator";
+import { computeBi, autoPickBiOpts } from "./engine/bi";
+import { BiPreview } from "./preview/BiPreview";
+import { suggestSpreadsheetFromText } from "@/lib/criador-ai.functions";
 
 type Tool = "home" | "word" | "ppt" | "xlsx";
 
